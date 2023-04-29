@@ -8,7 +8,9 @@ import java.util.List;
 public interface AccountTypeService {
     List<AccountTypeDto> findAll();
 
-//    AccountTypeDto createNewAccountType(CreateAccountTypeDto createAccountTypeDto);
-//    AccountTypeDto findAllAccountById(Integer id);
+    AccountTypeDto findAccountById(Integer id);
+
+    AccountTypeDto createNewAccountType(CreateAccountTypeDto createAccountTypeDto);
+
 
 }

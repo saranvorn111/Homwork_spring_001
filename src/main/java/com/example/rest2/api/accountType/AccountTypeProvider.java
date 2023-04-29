@@ -9,14 +9,20 @@ public class AccountTypeProvider {
             //TODO:
             SELECT("*");
             FROM(tableNameAccount);
-//            WHERE("id= #{id}");
         }}.toString();
     }
 
-//    public String buildInsertAccountSql(){
-//        return new SQL(){{
-//            INSERT_INTO(tableNameAccount);
-//            VALUES("name","#{a.name}");
-//        }}.toString();
-//    }
+    public String buildInsertAccountSql(){
+        return new SQL(){{
+            INSERT_INTO(tableNameAccount);
+            VALUES("name","#{a.name}");
+        }}.toString();
+    }
+    public String buildSelectByIdSql(){
+        return new SQL(){{
+            SELECT("*");
+            FROM(tableNameAccount);
+            WHERE("id = #{id}");
+        }}.toString();
+    }
 }

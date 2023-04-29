@@ -1,6 +1,7 @@
 package com.example.rest2.api.accountType.web_account;
 
 import com.example.rest2.api.accountType.AccountTypeService;
+import com.example.rest2.api.user.web.UserDto;
 import com.example.rest2.base.BaseRest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +27,28 @@ public class AccountTypeRestController {
                 .build();
 
     }
-//    @PostMapping
-//    public BaseRest<?> createNewAccountType(@RequestBody @Valid CreateAccountTypeDto createAccountTypeDto){
-//        AccountTypeDto accountTypeDto = accountTypeService.createNewAccountType(createAccountTypeDto);
-//        return BaseRest.builder()
-//                .status(true)
-//                .code(HttpStatus.OK.value())
-//                .message("Account have insert successfully")
-//                .timestamp(LocalDateTime.now())
-//                .date(accountTypeDto)
-//                .build();
-//    }
+    @GetMapping("/{id}")
+    public BaseRest<?> finAccountById(@PathVariable Integer id){
+        AccountTypeDto accountTypeDto = accountTypeService.findAccountById(id);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("Account have been create successfully")
+                .timestamp(LocalDateTime.now())
+                .date(accountTypeDto)
+                .build();
+    }
+
+    @PostMapping
+    public BaseRest<?> createNewAccountType(@RequestBody @Valid CreateAccountTypeDto createAccountTypeDto){
+        AccountTypeDto accountTypeDto = accountTypeService.createNewAccountType(createAccountTypeDto);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("Account have insert successfully")
+                .timestamp(LocalDateTime.now())
+                .date(accountTypeDto)
+                .build();
+    }
 
 }

@@ -25,20 +25,22 @@ public class AccountTypeServiceImpl implements AccountTypeService {
 //        System.out.println();
 //         return accountTypes;
     }
-//    @Override
-//    public AccountTypeDto findAllAccountById(Integer id) {
-//        AccountType accountType = accountTypeMapper.selectById(id).orElseThrow(()->
-//                new ResponseStatusException(HttpStatus.NOT_FOUND,
-//                        String.format("Account with %d is not found",id)));
-//        return accountTypeMapStruct.toDto(accountType);
-//    }
-//
-//    @Override
-//    public AccountTypeDto createNewAccountType(CreateAccountTypeDto createAccountTypeDto) {
-//        AccountType accountType = accountTypeMapStruct.createAccountTypeDtoToAccountType(createAccountTypeDto);
-//        accountTypeMapper.insert(accountType);
-//        return this.findAllAccountById(accountType.getId());
-//    }
+
+    @Override
+    public AccountTypeDto findAccountById(Integer id) {
+        AccountType accountType = accountTypeMapper.selectById(id).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Account with %d is not found",id)));
+        return accountTypeMapStruct.toDto(accountType);
+    }
+
+
+    @Override
+    public AccountTypeDto createNewAccountType(CreateAccountTypeDto createAccountTypeDto) {
+        AccountType accountType = accountTypeMapStruct.createAccountTypeDtoToAccountType(createAccountTypeDto);
+        accountTypeMapper.insert(accountType);
+        return this.findAccountById(accountType.getId());
+    }
 
 
 }

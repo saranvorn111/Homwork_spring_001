@@ -13,5 +13,5 @@ public interface AccountTypeMapStruct {
     List<AccountTypeDto> toDto(List<AccountType> model);
     AccountTypeDto toDto(AccountType accountType);
 
-//    AccountType createAccountTypeDtoToAccountType(CreateAccountTypeDto createAccountTypeDto);
+    AccountType createAccountTypeDtoToAccountType(CreateAccountTypeDto createAccountTypeDto);
 }
