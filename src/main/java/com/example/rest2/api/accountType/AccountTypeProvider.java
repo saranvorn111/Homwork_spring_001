@@ -25,4 +25,27 @@ public class AccountTypeProvider {
             WHERE("id = #{id}");
         }}.toString();
     }
+
+    public String buildUpdateByIdSql(){
+        return new SQL(){{
+            UPDATE(tableNameAccount);
+            SET("name = #{u.name}");
+            WHERE("id=#{u.id}");
+        }}.toString();
+    }
+    public String buildDeleteByIdSql(){
+        return new SQL(){{
+            DELETE_FROM(tableNameAccount);
+            WHERE("id = #{id}");
+        }}.toString();
+    }
+
+    public String buildUpdateIsDeletedByIdSql(){
+        return new SQL(){{
+            UPDATE(tableNameAccount);
+            SET("name = #{status}");
+            WHERE("id = #{id}");
+
+        }}.toString();
+    }
 }
