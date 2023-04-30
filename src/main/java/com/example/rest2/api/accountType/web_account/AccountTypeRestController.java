@@ -70,7 +70,7 @@ public class AccountTypeRestController {
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
-                .message("Account have been deleted successfully")
+                .message("Account deleted successfully")
                 .timestamp(LocalDateTime.now())
                 .date(deletedId)
                 .build();
