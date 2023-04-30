@@ -18,6 +18,9 @@ public interface UserMapper {
             @Result(column="student_card_id",property = "studentCardId"),
             @Result(column="is_student",property = "isStudent")})
     Optional<User> selectById(@Param("id") Integer id);
+    @ResultMap("userResultMap")
+    @SelectProvider(type = UserProvider.class,method = "buildSelectByStudentIdCard")
+    Optional<User> selectByStudentIdCard(@Param("studentCardId") String studentCardId);
 
     @SelectProvider(type= UserProvider.class,method = "buildSelectSql")
     @ResultMap("userResultMap")
@@ -35,4 +38,7 @@ public interface UserMapper {
 
     @UpdateProvider(type=UserProvider.class,method = "buildUpdateByIdSql")
     void updateById(@Param("u") User user);
+    @ResultMap("userResultMap")
+    @SelectProvider(type= UserProvider.class,method = "buildSelectByNameSql")
+    List<User> selectByName(@Param("name") String name);
 }

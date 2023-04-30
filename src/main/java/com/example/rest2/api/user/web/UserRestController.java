@@ -71,8 +71,9 @@ public class UserRestController {
     //find pages
     @GetMapping
     public BaseRest<?> findAllUsers(@RequestParam(name="page",required = false,defaultValue = "1") int page,
-                                    @RequestParam(name="limit",required = false,defaultValue = "20") int limit){
-        PageInfo<UserDto> userDtoPageInfo = userService.findAllUser(page,limit);
+                                    @RequestParam(name="limit",required = false,defaultValue = "20") int limit,
+                                    @RequestParam(name="name",required = false,defaultValue = "") String name){
+        PageInfo<UserDto> userDtoPageInfo = userService.findAllUser(page,limit,name);
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
@@ -94,6 +95,18 @@ public class UserRestController {
                 .date(userDto)
                 .build();
 
+    }
+
+    @GetMapping("/{studentCardId}/student-card-id")
+    public BaseRest<?> findUserByStudentCard(@PathVariable("studentCardId") String studentCardId){
+        UserDto userDto = userService.findUserByStudentCard(studentCardId);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("User have been find successfully.")
+                .timestamp(LocalDateTime.now())
+                .date(userDto)
+                .build();
     }
 
 }

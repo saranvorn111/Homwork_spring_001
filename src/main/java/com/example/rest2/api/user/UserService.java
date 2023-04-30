@@ -10,11 +10,13 @@ public interface UserService {
     UserDto findUserById(Integer id);
 
     //add one more
-    PageInfo<UserDto> findAllUser(int page,int limit);
+    PageInfo<UserDto> findAllUser(int page,int limit,String name);
 
     Integer deleteUserById(Integer id);
     Integer updateIsDeletedStatusById(Integer id,boolean status);
 
 
     UserDto updateUserById(Integer id, UpdateUserDto updateUserDto);
+
+    UserDto findUserByStudentCard(String studentCardId);
 }

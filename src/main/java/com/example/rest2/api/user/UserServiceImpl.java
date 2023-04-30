@@ -5,6 +5,7 @@ import com.example.rest2.api.user.web.UserDto;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
+import org.mapstruct.Mapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -31,10 +32,18 @@ public class UserServiceImpl implements UserService {
     }
     //pageInfo page and limit
     @Override
-    public PageInfo<UserDto> findAllUser(int page, int limit) {
-        PageInfo<User> userPageInfo = PageHelper.startPage(page,limit)
-                .doSelectPageInfo(userMapper::select);
-        return userMapStruct.userPageInforToUserDtoPageInfo(userPageInfo);
+    public PageInfo<UserDto> findAllUser(int page, int limit,String name ) {
+        if(name.equals("")){
+            PageInfo<User> userPageInfo = PageHelper.startPage(page,limit)
+                    .doSelectPageInfo(userMapper::select);
+            return userMapStruct.userPageInforToUserDtoPageInfo(userPageInfo);
+        }
+        else{
+            PageInfo<User> userPageInfo = PageHelper.startPage(page,limit)
+                    .doSelectPageInfo(() -> userMapper.selectByName(name));
+            return userMapStruct.userPageInforToUserDtoPageInfo(userPageInfo);
+        }
+
     }
 
     @Override
@@ -69,5 +78,14 @@ public class UserServiceImpl implements UserService {
         throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                 String.format("User with %d is not found", id));
 
+    }
+
+    @Override
+    public UserDto findUserByStudentCard(String studentCardId) {
+        User user = userMapper.selectByStudentIdCard(studentCardId).orElseThrow(()->
+                new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("User with %s is not found",studentCardId)));
+
+        return userMapStruct.userToUserDto(user);
     }
 }

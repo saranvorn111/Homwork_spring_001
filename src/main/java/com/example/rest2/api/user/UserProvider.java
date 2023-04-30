@@ -60,4 +60,21 @@ public class UserProvider {
             WHERE("id=#{u.id}");
         }}.toString();
     }
+
+    public String buildSelectByStudentIdCard(){
+        return new SQL(){{
+            SELECT("*");
+            FROM(tableName);
+            WHERE("student_card_id = #{studentCardId}");
+
+        }}.toString();
+    }
+    public String buildSelectByNameSql(){
+        return new SQL(){{
+            SELECT("*");
+            FROM(tableName);
+            WHERE("name ILIKE'%'|| #{name} ||'%'");
+        }}.toString();
+
+    }
 }
