@@ -1,8 +1,7 @@
-package com.example.rest2.api.accountType.web_account;
+package com.example.rest2.api.accountType.webAccountType;
 
 import com.example.rest2.api.accountType.AccountTypeService;
 import com.example.rest2.api.user.web.IsDeletedDto;
-import com.example.rest2.api.user.web.UserDto;
 import com.example.rest2.base.BaseRest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +69,7 @@ public class AccountTypeRestController {
         return BaseRest.builder()
                 .status(true)
                 .code(HttpStatus.OK.value())
-                .message("Account deleted successfully")
+                .message("Account have been deleted successfully")
                 .timestamp(LocalDateTime.now())
                 .date(deletedId)
                 .build();

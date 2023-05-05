@@ -1,11 +1,8 @@
 package com.example.rest2.api.accountType;
 
-import com.example.rest2.api.accountType.web_account.AccountTypeDto;
-import com.example.rest2.api.accountType.web_account.CreateAccountTypeDto;
-import com.example.rest2.api.accountType.web_account.UpdateAccountDto;
-import com.example.rest2.api.user.User;
-import com.example.rest2.api.user.web.CreateUserDto;
-import com.example.rest2.api.user.web.UpdateUserDto;
+import com.example.rest2.api.accountType.webAccountType.AccountTypeDto;
+import com.example.rest2.api.accountType.webAccountType.CreateAccountTypeDto;
+import com.example.rest2.api.accountType.webAccountType.UpdateAccountDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;

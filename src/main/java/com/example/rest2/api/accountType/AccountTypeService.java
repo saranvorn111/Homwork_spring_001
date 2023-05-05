@@ -1,8 +1,8 @@
 package com.example.rest2.api.accountType;
 
-import com.example.rest2.api.accountType.web_account.AccountTypeDto;
-import com.example.rest2.api.accountType.web_account.CreateAccountTypeDto;
-import com.example.rest2.api.accountType.web_account.UpdateAccountDto;
+import com.example.rest2.api.accountType.webAccountType.AccountTypeDto;
+import com.example.rest2.api.accountType.webAccountType.CreateAccountTypeDto;
+import com.example.rest2.api.accountType.webAccountType.UpdateAccountDto;
 
 import java.util.List;
 

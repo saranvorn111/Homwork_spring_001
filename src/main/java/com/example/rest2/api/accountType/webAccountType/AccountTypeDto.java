@@ -1,4 +1,4 @@
-package com.example.rest2.api.accountType.web_account;
+package com.example.rest2.api.accountType.webAccountType;
 
 import lombok.Builder;
 @Builder
