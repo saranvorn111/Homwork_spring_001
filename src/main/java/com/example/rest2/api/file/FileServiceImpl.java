@@ -18,7 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -35,42 +34,47 @@ public class FileServiceImpl implements FileService {
         this.fileUtil = fileUtil;
     }
 
+    //UploadSingle file
     @Override
     public FileDto uploadSingle(MultipartFile file) {
         return fileUtil.upload(file);
 
-
     }
 
+    //uploadMultiple file
     @Override
     public List<FileDto> uploadMultiple(List<MultipartFile> files) {
         List<FileDto> filesDto = new ArrayList<>();
         for (MultipartFile file : files) {
             filesDto.add(fileUtil.upload(file));
+
         }
         return filesDto;
     }
 
+    //Find All file
     @Override
     public List<FileDto> findAll() {
         File file = new File(fileServerPath);
         File[] files = file.listFiles();
         List<FileDto> fileDtoList = new ArrayList<>();
-        assert files != null;
-        for (File file1 : files) {
+        //assert files != null;
+        for (File fileList : files) {
             fileDtoList
                     .add(
                             new FileDto(
-                                    file1.getName()
-                                    , fileBaseUrl + file1.getName()
-                                    , file1.getName().substring(file1.getName().lastIndexOf(".") + 1)
-                                    , file1.length()
+                                    fileList.getName()
+                                    , fileBaseUrl + fileList.getName(),
+                                    "http://localhost:15000/api/v1/files/download/"+fileList.getName().substring(0,fileList.getName().length()-4)
+                                    , fileList.getName().substring(fileList.getName().lastIndexOf(".") + 1)
+                                    , fileList.length()
                             )
                     );
         }
         return fileDtoList;
     }
 
+    //Find file by name
     @Override
     public FileDto findFileByName(String name) {
         Path path;
@@ -85,6 +89,7 @@ public class FileServiceImpl implements FileService {
                             .name(name)
                             .size(resource.contentLength())
                             .url(fileBaseUrl+name + ".jpg")
+                            .downloadUrl("http://localhost:15000/api/v1/files/download/"+name)
                             .extension("jpg")
                             .build();
                 }
@@ -96,6 +101,7 @@ public class FileServiceImpl implements FileService {
                             .name(name)
                             .size(resource.contentLength())
                             .url(fileBaseUrl+name + ".png")
+                            .downloadUrl("http://localhost:15000/api/v1/files/download/"+name)
                             .extension("png")
                             .build();
                 }
@@ -107,6 +113,7 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    //delete file by name
     @Override
     public String deleteFile(String name) {
         Path path = Paths.get(fileServerPath+name);
@@ -132,13 +139,37 @@ public class FileServiceImpl implements FileService {
         return "File is deleted Successfully";
 
     }
+    //delete All file
     @Override
     public String deleteAllFile() {
         File file = new File(fileServerPath);
         File[] files = file.listFiles();
-        for (File file1 : files) {
-            file1.delete();
+        for (File fileDelete : files) {
+            fileDelete.delete();
         }
         return "DeleteAllFile is Successfully";
+    }
+
+    //download file Url
+    @Override
+    public Resource downloadFileName(String fileName) {
+        File files = new File(fileServerPath);
+        File[] fileDownload  = files.listFiles();
+        Path path;
+        Resource resource;
+        for(File file : fileDownload){
+            String sortUrl = file.getName().substring(0,file.getName().length()-4);
+            if(sortUrl.equals(fileName)){
+                path = Paths.get(fileServerPath +file.getName()).toAbsolutePath().normalize();
+                try {
+                    System.out.println("http://localhost:15000/api/v1/files/download/"+fileName);
+                  return new  UrlResource(path.toUri());
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND,"file is not found");
     }
 }

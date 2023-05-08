@@ -1,13 +1,13 @@
 package com.example.rest2.api.file;
-
 import com.example.rest2.base.BaseRest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FileRestController {
     private final FileService fileService;
-
+    //uploadSingle file
     @PostMapping
     public BaseRest<?> uploadSingle(@RequestPart MultipartFile file) {
         log.info("file Request ={} ",file);
@@ -30,6 +30,7 @@ public class FileRestController {
                 .date(fileDto)
                 .build();
     }
+    //UploadMultiple files
     @PostMapping("/multiple")
     public BaseRest<?> uploadMultiple(@RequestPart List<MultipartFile> files){
         log.info("file Request ={} ",files);
@@ -43,6 +44,7 @@ public class FileRestController {
                 .build();
     }
 
+    //Find all files
     @GetMapping
     public BaseRest<?> findAll(){
         List<FileDto> fileDto = fileService.findAll();
@@ -54,6 +56,8 @@ public class FileRestController {
                 .date(fileDto)
                 .build();
     }
+
+    //Find fill by name
     @GetMapping("/{name}")
     public BaseRest<?> findFileByName(@PathVariable String name){
         return BaseRest.builder()
@@ -65,6 +69,8 @@ public class FileRestController {
                 .build();
     }
 
+
+    //Delete file by name
     @DeleteMapping("/delete/{name}")
     public BaseRest<?> deleteFile(@PathVariable String name){
         return BaseRest.builder()
@@ -75,6 +81,8 @@ public class FileRestController {
                 .date(fileService.deleteFile(name))
                 .build();
     }
+
+    //Delete All file
     @DeleteMapping("/deletes")
     public BaseRest<?> deleteAllFile(){
         return BaseRest.builder()
@@ -86,4 +94,14 @@ public class FileRestController {
                 .build();
     }
 
+
+    //Download file Name
+    @GetMapping("/download/{fileName}")
+    public ResponseEntity<?> downloadFileName(@PathVariable("fileName") String fileName){
+        Resource resource = fileService.downloadFileName(fileName);
+        return ResponseEntity
+                .ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+resource.getFilename()+"\"")
+                .body(resource);
+    }
 }
