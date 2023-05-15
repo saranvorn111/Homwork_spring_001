@@ -26,9 +26,7 @@ public class FileServiceImpl implements FileService {
     private String fileServerPath;
     @Value("${file.base-url}")
     private String fileBaseUrl;
-
     private FileUtil fileUtil;
-
     @Autowired
     public void setFileUtil(FileUtil fileUtil) {
         this.fileUtil = fileUtil;

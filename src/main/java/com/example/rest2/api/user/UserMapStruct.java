@@ -1,5 +1,6 @@
 package com.example.rest2.api.user;
 
+import com.example.rest2.api.Auth.web.RegisterDto;
 import com.example.rest2.api.user.web.CreateUserDto;
 import com.example.rest2.api.user.web.UpdateUserDto;
 import com.example.rest2.api.user.web.UserDto;
@@ -16,4 +17,7 @@ public interface UserMapStruct {
 
     //add new page in pageInfo
     PageInfo<UserDto> userPageInforToUserDtoPageInfo(PageInfo<User> userPageInfo);
+
+    //Auth MapSturct
+    User registerDtoToUser(RegisterDto registerDto);
 }
