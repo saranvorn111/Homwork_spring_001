@@ -41,4 +41,12 @@ public interface UserMapper {
     @ResultMap("userResultMap")
     @SelectProvider(type= UserProvider.class,method = "buildSelectByNameSql")
     List<User> selectByName(@Param("name") String name);
+
+
+    //validate
+    @Select("SELECT EXISTS(SELECT * FROM users WHERE email=#{email})")
+    boolean existByEmail(String email);
+
+    @Select("SELECT EXISTS(SELECT * FROM roles WHERE id=#{roleId})")
+    boolean checkRole(Integer roleId);
 }
