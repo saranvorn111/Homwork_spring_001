@@ -2,24 +2,37 @@ package com.example.rest2.api.Auth;
 import com.example.rest2.api.Auth.web.AuthDto;
 import com.example.rest2.api.Auth.web.LogInDto;
 import com.example.rest2.api.Auth.web.RegisterDto;
+import com.example.rest2.api.Auth.web.TokenDto;
 import com.example.rest2.api.user.User;
 import com.example.rest2.api.user.UserMapStruct;
 import com.example.rest2.util.MailUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,8 +43,20 @@ public class AuthServiceImp implements  AuthService{
     private final PasswordEncoder encoder;
     private final MailUtil mailUtil;
     private final DaoAuthenticationProvider daoAuthenticationProvider;
+    private final JwtEncoder jwtAccessTokenEncoder;
+    private  JwtEncoder jwtRefreshTokenEncoder;
+
+    @Autowired
+    public void setJwtRefreshTokenEncoder(JwtEncoder jwtRefreshTokenEncoder){
+        this.jwtRefreshTokenEncoder=jwtRefreshTokenEncoder;
+    }
     @Value("${spring.mail.username}")
     private String appMail;
+
+    @Override
+    public AuthDto refreshToken(TokenDto tokenDto) {
+        return null;
+    }
 
     @Override
     public AuthDto login(LogInDto loginDto) {
@@ -39,16 +64,57 @@ public class AuthServiceImp implements  AuthService{
 
         authentication= daoAuthenticationProvider.authenticate(authentication);
 
-        log.info("Authentication: {}",authentication);
-        log.info("Authentication: {}",authentication.getName());
-        log.info("Authentication: {}",authentication.getCredentials());
+        //create time now
+        Instant now = Instant.now();
 
-        //Login on basic authorization header
-        String basicAuthFormat = authentication.getName() + ":"+ authentication.getCredentials();
-        String encoding = Base64.getEncoder().encodeToString(basicAuthFormat.getBytes());
+        //Define Scope
+        String scope = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .filter(auth -> !auth.startsWith("ROLE_"))
+                .collect(Collectors.joining(" "));
 
-        log.info("Basic {}",encoding);
-        return new AuthDto(String.format("Basic %s",encoding));
+//        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+//        authorities.add(new SimpleGrantedAuthority("WRITE") );
+//        authorities.add(new SimpleGrantedAuthority("READ") );
+//        authorities.add(new SimpleGrantedAuthority("DELETE") );
+//        authorities.add(new SimpleGrantedAuthority("UPDATE") );
+//        authorities.add(new SimpleGrantedAuthority("FULL_CONTROL") );
+//
+//        String scope = authorities.stream()
+//                .map(SimpleGrantedAuthority::getAuthority)
+//                .collect(Collectors.joining(" "));
+
+
+
+        JwtClaimsSet jwtAccessTokenClaimsSet = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .subject(authentication.getName())
+                .expiresAt(now.plus(1, ChronoUnit.SECONDS))
+                .claim("scope",scope)
+                .build();
+
+        JwtClaimsSet jwtRefreshTokenClaimsSet = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .subject(authentication.getName())
+                .expiresAt(now.plus(1, ChronoUnit.HOURS))
+                .claim("scope",scope)
+                .build();
+
+
+        String accessToken = jwtAccessTokenEncoder.encode(JwtEncoderParameters.from(jwtAccessTokenClaimsSet)
+                ).getTokenValue();
+
+        String refreshToken = jwtRefreshTokenEncoder.encode(JwtEncoderParameters.from(jwtRefreshTokenClaimsSet)
+        ).getTokenValue();
+
+
+
+
+        return new AuthDto("Bearer",
+                accessToken,
+                refreshToken);
     }
 
     @Transactional

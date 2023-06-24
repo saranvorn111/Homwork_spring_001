@@ -3,7 +3,9 @@ package com.example.rest2.api.Auth;
 import com.example.rest2.api.Auth.web.AuthDto;
 import com.example.rest2.api.Auth.web.LogInDto;
 import com.example.rest2.api.Auth.web.RegisterDto;
+import com.example.rest2.api.Auth.web.TokenDto;
 import com.example.rest2.base.BaseRest;
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +21,17 @@ public class AuthRestController {
     private final AuthService authService;
 
 
+    @PostMapping("/refresh")
+    public BaseRest<?> refreshToken(@RequestBody TokenDto tokenDto){
+        AuthDto authDto = authService.refreshToken(tokenDto);
+        return BaseRest.builder()
+                .status(true)
+                .code(HttpStatus.OK.value())
+                .message("Token have been refreshed")
+                .timestamp(LocalDateTime.now())
+                .date(authDto)
+                .build();
+    }
     @PostMapping("/login")
     public BaseRest<?> login(@Valid @RequestBody LogInDto logIngDto ){
         //call service

@@ -18,6 +18,6 @@ public interface UserMapStruct {
     //add new page in pageInfo
     PageInfo<UserDto> userPageInforToUserDtoPageInfo(PageInfo<User> userPageInfo);
 
-    //Auth MapSturct
+    //Auth Mapstruct
     User registerDtoToUser(RegisterDto registerDto);
 }

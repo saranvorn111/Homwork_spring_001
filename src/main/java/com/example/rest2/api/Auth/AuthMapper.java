@@ -1,6 +1,7 @@
 package com.example.rest2.api.Auth;
 import com.example.rest2.api.user.Role;
 import com.example.rest2.api.user.User;
+import com.example.rest2.api.user.web.Authority;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -47,5 +48,10 @@ public interface AuthMapper {
     Optional<User> loadUserByUsername(@Param("email") String email);
 
     @SelectProvider(type = AuthProvider.class,method = "buildLoadUserRolesSql")
-    List<Role> loadUserRoles(@Param("id") Integer id);
+    @Result(column = "id",property = "authorities",
+            many = @Many(select="loadUserAuthorities"))
+    List<Role> loadUserRoles(Integer userId);
+
+    @SelectProvider(type=AuthProvider.class, method="buildLoadUserAuthoritiesSql")
+    List<Authority> loadUserAuthorities(Integer roleId);
 }

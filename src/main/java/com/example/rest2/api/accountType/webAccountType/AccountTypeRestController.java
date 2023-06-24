@@ -6,6 +6,7 @@ import com.example.rest2.base.BaseRest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class AccountTypeRestController {
     private final AccountTypeService accountTypeService;
     @GetMapping
+    @PreAuthorize("hasAuthority('SCOPE_account:read')")
     public BaseRest<?>findAll(){
         var accountTypeDtoList = accountTypeService.findAll();
         return BaseRest.builder()
@@ -28,6 +30,7 @@ public class AccountTypeRestController {
 
     }
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_account:read')")
     public BaseRest<?> finAccountById(@PathVariable Integer id){
         AccountTypeDto accountTypeDto = accountTypeService.findAccountById(id);
         return BaseRest.builder()
@@ -40,6 +43,7 @@ public class AccountTypeRestController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('SCOPE_account:write')")
     public BaseRest<?> createNewAccountType(@RequestBody @Valid CreateAccountTypeDto createAccountTypeDto){
         AccountTypeDto accountTypeDto = accountTypeService.createNewAccountType(createAccountTypeDto);
         return BaseRest.builder()
@@ -52,6 +56,7 @@ public class AccountTypeRestController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_account:update')")
     public BaseRest<?> updateAccountById(@PathVariable("id") Integer id,@RequestBody UpdateAccountDto updateAccountDto){
         AccountTypeDto accountTypeDto = accountTypeService.updateAccountById(id,updateAccountDto);
         return BaseRest.builder()
@@ -64,6 +69,7 @@ public class AccountTypeRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_account:delete')")
     public BaseRest<?> deleteAccountById(@PathVariable Integer id){
         Integer deletedId = accountTypeService.deletedAccountById(id);
         return BaseRest.builder()
@@ -76,6 +82,7 @@ public class AccountTypeRestController {
     }
 
     @PutMapping("/{id}/name")
+    @PreAuthorize("hasAuthority('SCOPE_account:update')")
     public BaseRest<?> updateIsDeletedStatusById(@PathVariable Integer id, @RequestBody IsDeletedDto dto ){
         Integer deletedId = accountTypeService.updatedIsDeletedStatusAccount(id,dto.status());
         return BaseRest.builder()
